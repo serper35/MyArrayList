@@ -1,19 +1,19 @@
 package org.example.Impl;
 
-import org.example.StringList;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-public class StringListImpl implements StringList {
+public class MyArrayList<T>  {
 
-    private String[] array;
+    private Object [] array;
     private int currentSize = 0;
+    private final int DEFAULT_CAPACITY = 10;
 
-    public StringListImpl(int size) {
-        this.array = new String[size];
+    public MyArrayList() {
+        this.array = new String[DEFAULT_CAPACITY];
     }
 
-    @Override
-    public String add(String item) {
+    public void add(Object item) {
         if (item == null) {
             throw new NullPointerException("Item не может быть null!");
         }
@@ -23,11 +23,9 @@ public class StringListImpl implements StringList {
         }
         array[currentSize] = item;
         currentSize++;
-        return item;
     }
 
-    @Override
-    public String add(int index, String item) {
+    public void add(int index, Object item) {
         if (item == null) {
             throw new NullPointerException("Item не может быть null!");
         }
@@ -45,11 +43,9 @@ public class StringListImpl implements StringList {
         }
         array[index] = item;
         currentSize++;
-        return item;
     }
 
-    @Override
-    public String set(int index, String item) {
+    public void set(int index, Object item) {
         if (item == null) {
             throw new NullPointerException("Item не может быть null!");
         }
@@ -59,11 +55,9 @@ public class StringListImpl implements StringList {
         }
 
         array[index] = item;
-        return item;
     }
 
-    @Override
-    public String remove(String item) {
+    public void remove(Object item) {
         if (item == null) {
             throw new NullPointerException("Item не может быть null!");
         }
@@ -79,29 +73,21 @@ public class StringListImpl implements StringList {
         if (!check) {
             throw new NoSuchElementException(item + " не найден в массиве!");
         }
-        return item;
     }
 
-    @Override
-    public String remove(int index) {
+    public void remove(int index) {
         if (index >= array.length || index < 0) {
             throw new ArrayIndexOutOfBoundsException("Индекс за пределами массива!");
         }
-
-        String deletedObject = array[index];
 
         for (int i = index; i < array.length - 1; i++) {
             array[i] = array[i + 1];
         }
 
-        array[array.length - 1] = null;
         currentSize--;
-
-        return deletedObject;
     }
 
-    @Override
-    public boolean contains(String item) {
+    public boolean contains(Object item) {
         if (item == null) {
             throw new NullPointerException("Item не может быть null!");
         }
@@ -116,8 +102,7 @@ public class StringListImpl implements StringList {
         return check;
     }
 
-    @Override
-    public int indexOf(String item) {
+    public int indexOf(Object item) {
         if (item == null) {
             throw new NullPointerException("Item не может быть null!");
         }
@@ -133,8 +118,7 @@ public class StringListImpl implements StringList {
         return index;
     }
 
-    @Override
-    public int lastIndexOf(String item) {
+    public int lastIndexOf(Object item) {
         if (item == null) {
             throw new NullPointerException("Item не может быть null!");
         }
@@ -150,8 +134,7 @@ public class StringListImpl implements StringList {
         return index;
     }
 
-    @Override
-    public String get(int index) {
+    public Object get(int index) {
         if (index >= array.length || index < 0) {
             throw new ArrayIndexOutOfBoundsException("Индекс за пределами массива!");
         }
@@ -159,8 +142,7 @@ public class StringListImpl implements StringList {
         return array[index];
     }
 
-    @Override
-    public boolean equals(StringList otherList) {
+    public boolean equals(MyArrayList otherList) {
         if (otherList == null) {
             throw new IllegalArgumentException("Other list cannot be null");
         }
@@ -175,37 +157,39 @@ public class StringListImpl implements StringList {
         return true;
     }
 
-    @Override
+
     public int size() {
         return currentSize;
     }
 
-    @Override
+
     public boolean isEmpty() {
         return currentSize == 0;
     }
 
-    @Override
     public void clear() {
-        for (int i = 0; i < array.length; i++) {
-            array[i] = null;
-        }
+        Arrays.fill(array, null);
         currentSize = 0;
     }
 
-    @Override
-    public String[] toArray() {
-        String[] newArray = new String[array.length];
-        for (int i = 0; i < array.length; i++) {
-            newArray[i] = array[i];
-        }
-        return newArray;
-    }
-
     private void resize() {
-        String[] newArray = new String[array.length * 2];
+        Object[] newArray = new Object[(int) (array.length * 1.5 + 1)];
         System.arraycopy(array, 0, newArray, 0, array.length);
         array = newArray;
+    }
 
+    public void bubbleSort() {
+        boolean sorted = false;
+        while (!sorted) {
+            sorted = true;
+            for (int i = 0; i < currentSize - 1; i++) {
+                if (((Comparable<T>) array[i]).compareTo((T) array[i + 1]) > 0) {
+                    T temp = (T) array[i];
+                    array[i] = array[i + 1];
+                    array[i + 1] = temp;
+                    sorted = false;
+                }
+            }
+        }
     }
 }
